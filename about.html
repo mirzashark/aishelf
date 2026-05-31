@@ -1,0 +1,959 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Us - AIShelf</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    <style>
+        /* Variables */
+        :root {
+            --blue-primary: #2D6BE4;
+            --blue-dark: #1A47A0;
+            --blue-light: #EEF3FD;
+            --blue-glow: rgba(45, 107, 228, 0.15);
+            --dark-bg: #0D1B3E;
+            --darker-bg: #020813;
+            --text-primary: #111827;
+            --text-muted: #6b7280;
+            --text-light: #E2E8F0;
+            --border: #e5e7eb;
+            --card-bg: #ffffff;
+            --page-bg: #f8faff;
+            --max-width: 1200px;
+        }
+
+        /* Base styles */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            color: var(--text-primary);
+            background-color: var(--page-bg);
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+            scroll-behavior: smooth;
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Playfair Display', serif;
+            color: var(--text-primary);
+            line-height: 1.2;
+            margin-bottom: 0.5em;
+        }
+        
+        .monospace {
+            font-family: 'Courier New', monospace;
+        }
+
+        a {
+            color: var(--blue-primary);
+            text-decoration: none;
+            transition: color 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        a:hover {
+            color: var(--blue-dark);
+        }
+
+        p {
+            margin-bottom: 1em;
+        }
+
+        .container {
+            max-width: var(--max-width);
+            margin: 0 auto;
+            padding: 0 1rem;
+        }
+
+        section {
+            padding: 5rem 0;
+            opacity: 0; /* For scroll reveal */
+            transform: translateY(30px); /* For scroll reveal */
+            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+        }
+
+        section.is-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        /* Staggered children for scroll reveal */
+        section.is-visible > .container > *:nth-child(1) { transition-delay: 0s; }
+        section.is-visible > .container > *:nth-child(2) { transition-delay: 0.1s; }
+        section.is-visible > .container > *:nth-child(3) { transition-delay: 0.2s; }
+        section.is-visible > .container > *:nth-child(4) { transition-delay: 0.3s; }
+        section.is-visible > .container > *:nth-child(5) { transition-delay: 0.4s; }
+        section.is-visible > .container > *:nth-child(6) { transition-delay: 0.5s; }
+
+        /* Buttons */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0.9rem 1.8rem;
+            border-radius: 8px;
+            font-weight: 500;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-align: center;
+            white-space: nowrap;
+        }
+
+        .btn-primary {
+            background-color: var(--blue-primary);
+            color: var(--card-bg);
+            border: 1px solid var(--blue-primary);
+        }
+
+        .btn-primary:hover {
+            background-color: var(--blue-dark);
+            border-color: var(--blue-dark);
+            box-shadow: 0 0 20px var(--blue-glow);
+        }
+
+        .btn-outline {
+            background-color: transparent;
+            color: var(--text-light);
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .btn-outline:hover {
+            border-color: var(--blue-primary);
+            color: var(--blue-primary);
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 1.2rem;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        /* Navbar */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background-color: #020813;
+            backdrop-filter: blur(5px);
+            padding: 0.5rem 0;
+            z-index: 1000;
+            border-bottom: 1px solid rgba(45, 107, 228, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .navbar.scrolled {
+            backdrop-filter: blur(10px);
+            padding: 0.3rem 0;
+            background-color: rgba(2, 8, 19, 0.95);
+        }
+
+        .navbar .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-family: 'DM Sans', sans-serif;
+            font-size: 1.8rem;
+            font-weight: 700;
+            letter-spacing: 0.05em;
+            color: var(--text-light);
+        }
+
+        .logo span {
+            color: var(--blue-primary);
+        }
+
+        .logo img, .footer-logo img {
+            height: 70px;
+            display: block;
+            width: auto;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2.5rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: var(--text-light);
+            font-weight: 500;
+            padding: 0.5rem 0;
+            position: relative;
+        }
+
+        .nav-links a:hover, .nav-links a.active {
+            color: var(--blue-primary);
+            text-shadow: 0 0 8px var(--blue-glow);
+        }
+
+        .nav-links a.active::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background-color: var(--blue-primary);
+            box-shadow: 0 0 8px var(--blue-glow);
+        }
+
+        .nav-cta {
+            margin-left: 2rem;
+            border: 1px solid var(--blue-primary);
+            color: var(--blue-primary);
+            background: transparent;
+            padding: 0.7rem 1.4rem;
+        }
+        .nav-cta:hover {
+            background-color: var(--blue-primary);
+            color: var(--card-bg);
+            box-shadow: 0 0 15px var(--blue-glow);
+        }
+
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            justify-content: space-between;
+            width: 28px;
+            height: 22px;
+            cursor: pointer;
+            z-index: 1001;
+            padding: 0;
+            background: none;
+            border: none;
+        }
+
+        .hamburger span {
+            display: block;
+            width: 100%;
+            height: 2px;
+            background-color: var(--text-light);
+            transition: all 0.3s ease;
+            border-radius: 1px;
+        }
+
+        .hamburger.open span:nth-child(1) {
+            transform: translateY(10px) rotate(45deg);
+        }
+
+        .hamburger.open span:nth-child(2) {
+            opacity: 0;
+        }
+
+        .hamburger.open span:nth-child(3) {
+            transform: translateY(-10px) rotate(-45deg);
+        }
+
+        .mobile-menu {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            background-color: var(--darker-bg);
+            padding-top: 6rem; /* Adjust for navbar height */
+            flex-direction: column;
+            align-items: center;
+            gap: 1.8rem;
+            transition: transform 0.3s ease-out;
+            transform: translateY(-100%);
+            z-index: 999;
+            list-style: none;
+        }
+
+        .mobile-menu.open {
+            transform: translateY(0);
+            display: flex;
+        }
+
+        .mobile-menu a {
+            font-size: 1.6rem;
+            color: var(--text-light);
+            font-weight: 500;
+        }
+        .mobile-menu a:hover, .mobile-menu a.active {
+            color: var(--blue-primary);
+        }
+
+        .mobile-menu .btn {
+            margin-top: 1rem;
+            padding: 0.8rem 1.6rem;
+        }
+
+        /* Hero Section */
+        .hero {
+            position: relative;
+            height: 60vh;
+            min-height: 450px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            background-color: var(--darker-bg);
+            overflow: hidden;
+            padding-top: 6rem; /* Account for navbar */
+        }
+
+        /* CSS Grid Background */
+        .hero-background {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image:
+                linear-gradient(to right, rgba(45,107,228,0.05) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(45,107,228,0.05) 1px, transparent 1px);
+            background-size: 40px 40px;
+            animation: gridDrift 8s linear infinite;
+        }
+
+        @keyframes gridDrift {
+            0% { background-position: 0 0; }
+            100% { background-position: 40px 40px; }
+        }
+
+        /* Radial Glow Overlay */
+        .hero-background::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at center, rgba(45,107,228,0.1) 0%, transparent 50%);
+            pointer-events: none;
+        }
+        
+        /* Scanline Overlay */
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: repeating-linear-gradient(
+                rgba(0,0,0,0.01), 
+                rgba(0,0,0,0.01) 1px, 
+                transparent 1px, 
+                transparent 2px
+            );
+            pointer-events: none;
+            z-index: 2;
+        }
+
+        .hero .container {
+            position: relative;
+            z-index: 10;
+        }
+
+        .hero-eyebrow {
+            font-size: 0.75rem;
+            font-weight: 500;
+            color: var(--blue-primary);
+            letter-spacing: 3px;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .blinking-cursor {
+            display: inline-block;
+            width: 2px;
+            height: 1em;
+            background-color: var(--blue-primary);
+            margin-left: 0.2em;
+            vertical-align: middle;
+            animation: blink 0.8s infinite;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+
+        .hero h1 {
+            font-size: clamp(2.4rem, 5vw, 3.5rem);
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(135deg, #ffffff 0%, var(--blue-primary) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* Cursor Glow */
+        .cursor-glow {
+            position: absolute;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(45,107,228,0.12) 0%, transparent 70%);
+            border-radius: 50%;
+            pointer-events: none;
+            transform: translate(-50%, -50%);
+            transition: opacity 0.3s ease-out;
+            opacity: 0;
+            z-index: 1;
+        }
+        .hero:hover .cursor-glow {
+            opacity: 1;
+        }
+
+        /* Story Section */
+        .story-section {
+            background-color: var(--page-bg);
+        }
+
+        .section-heading {
+            text-align: center;
+            margin-bottom: 3.5rem;
+        }
+
+        .section-heading h2 {
+            font-size: clamp(2rem, 4vw, 2.5rem);
+            margin-bottom: 0.75rem;
+        }
+
+        .story-content {
+            max-width: 800px;
+            margin: 0 auto;
+            font-size: 1.125rem;
+            color: var(--text-primary);
+            text-align: center;
+        }
+
+        .story-content p {
+            margin-bottom: 1.5rem;
+            line-height: 1.8;
+        }
+
+        /* Trust Section */
+        .trust-section {
+            background-color: var(--page-bg);
+            padding-top: 2rem;
+        }
+
+        .trust-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .trust-item {
+            text-align: center;
+            padding: 2.2rem;
+            background-color: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .trust-item:hover {
+            border-color: var(--blue-primary);
+            transform: translateY(-5px);
+            box-shadow: 0 8px 30px rgba(45,107,228,0.12);
+        }
+
+        .trust-icon {
+            font-size: 2rem;
+            color: var(--blue-primary);
+            margin-bottom: 1rem;
+            line-height: 1;
+        }
+
+        .trust-item h3 {
+            font-size: 1.375rem;
+            font-weight: 700;
+            margin-bottom: 0.75rem;
+        }
+
+        .trust-item p {
+            color: var(--text-muted);
+            font-size: 0.9375rem;
+            margin-bottom: 0;
+        }
+
+        /* Coverage Section */
+        .coverage-section {
+            background-color: var(--page-bg);
+        }
+
+        .pills-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1.2rem;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .pill-item {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+            border-radius: 10px;
+            border: 1px solid var(--border);
+            background-color: var(--card-bg);
+            color: var(--text-muted);
+            font-weight: 600;
+            font-size: 1rem;
+            text-align: center;
+            cursor: default;
+            transition: all 0.3s ease;
+        }
+
+        .pill-item:hover {
+            background-color: var(--blue-primary);
+            border-color: var(--blue-primary);
+            color: var(--card-bg);
+            box-shadow: 0 4px 15px var(--blue-glow);
+        }
+
+        /* Closing CTA Section */
+        .closing-cta {
+            background-color: var(--darker-bg);
+            color: var(--text-light);
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .closing-cta h2 {
+            font-size: clamp(2rem, 4vw, 2.5rem);
+            color: var(--text-light);
+            margin-bottom: 1rem;
+        }
+
+        .closing-cta p {
+            font-size: 1.125rem;
+            color: #94A3B8;
+            max-width: 600px;
+            margin: 0 auto 2.5rem auto;
+        }
+
+        /* Footer */
+        .footer {
+            background-color: var(--darker-bg);
+            color: #94A3B8;
+            padding-top: 4rem;
+            border-top: 1px solid rgba(45, 107, 228, 0.15);
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2.5rem;
+            margin-bottom: 3.5rem;
+        }
+
+        .footer-col h4 {
+            font-family: 'Courier New', monospace;
+            font-size: 0.8125rem;
+            font-weight: 500;
+            color: var(--blue-primary);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 1.5rem;
+        }
+
+        .footer-logo {
+            display: block;
+            margin-bottom: 0.75rem;
+        }
+
+        .footer-tagline {
+            font-size: 0.9375rem;
+            color: #94A3B8;
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+        }
+
+        .social-icons {
+            display: flex;
+            gap: 0.8rem;
+        }
+
+        .social-icon {
+            width: 36px;
+            height: 36px;
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: var(--text-light);
+            font-size: 1rem;
+            transition: all 0.2s ease;
+        }
+
+        .social-icon:hover {
+            border-color: var(--blue-primary);
+            color: var(--blue-primary);
+            box-shadow: 0 0 10px rgba(45,107,228,0.3);
+        }
+
+        .footer-links {
+            list-style: none;
+        }
+
+        .footer-links li {
+            margin-bottom: 0.8rem;
+        }
+
+        .footer-links a {
+            color: #94A3B8;
+            font-size: 0.9375rem;
+            transition: color 0.2s ease;
+        }
+
+        .footer-links a:hover {
+            color: var(--blue-primary);
+        }
+
+        .footer-deals ul {
+            list-style: none;
+        }
+        .footer-deals li {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 0.75rem;
+            font-size: 0.9375rem;
+            color: #94A3B8;
+        }
+        .footer-deals li::before {
+            content: '→';
+            color: var(--blue-primary);
+            font-weight: bold;
+        }
+
+        .footer-bottom {
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 1.5rem 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+            font-size: 0.875rem;
+            color: #94A3B8;
+        }
+
+        .footer-bottom-links a {
+            color: #94A3B8;
+            margin-left: 1rem;
+            transition: color 0.2s ease;
+        }
+        .footer-bottom-links a:hover {
+            color: var(--blue-primary);
+        }
+
+        .disclosure {
+            background-color: var(--darker-bg);
+            color: var(--text-muted);
+            font-size: 0.6875rem;
+            padding: 1.5rem 0;
+            text-align: center;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        /* Media Queries */
+        @media (max-width: 1024px) {
+            .nav-links, .nav-cta {
+                display: none;
+            }
+            .hamburger {
+                display: flex;
+            }
+        }
+
+        @media (max-width: 768px) {
+            section {
+                padding: 4rem 0;
+            }
+            .hero {
+                height: 50vh;
+                min-height: 380px;
+                padding-top: 5rem;
+            }
+            .hero h1 {
+                font-size: clamp(2rem, 7vw, 2.5rem);
+            }
+            .story-content {
+                font-size: 1rem;
+            }
+            .trust-grid {
+                grid-template-columns: 1fr;
+            }
+            .pills-grid {
+                grid-template-columns: 1fr;
+            }
+            .footer-content {
+                grid-template-columns: 1fr;
+            }
+            .footer-bottom {
+                flex-direction: column;
+                text-align: center;
+            }
+            .footer-bottom-links a {
+                margin: 0 0.5rem;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .hero-background, .hero-background::after, .blinking-cursor,
+            .cursor-glow, section, .trust-item, .btn-primary:hover, .nav-cta:hover {
+                animation: none !important;
+                transition: none !important;
+                transform: none !important;
+                opacity: 1 !important;
+                backdrop-filter: none !important;
+                box-shadow: none !important;
+            }
+        }
+
+    </style>
+</head>
+<body>
+    <nav class="navbar" id="navbar">
+        <div class="container">
+            <a href="index.html" class="logo"><img src="logo.png" alt="AIShelf Logo"></a>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="about.html" class="active">About</a></li>
+                <li><a href="blog.html">Blog</a></li>
+                <li><a href="contact.html">Contact</a></li>
+            </ul>
+            <a href="index.html#tool-directory" class="btn nav-cta">Explore Tools</a>
+            <button class="hamburger" aria-label="Toggle navigation menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </div>
+        <ul class="mobile-menu">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="about.html" class="active">About</a></li>
+            <li><a href="blog.html">Blog</a></li>
+            <li><a href="contact.html">Contact</a></li>
+            <li><a href="index.html#tool-directory" class="btn btn-primary">Explore Tools</a></li>
+        </ul>
+    </nav>
+
+    <main>
+        <section class="hero is-visible" id="hero-section">
+            <div class="hero-background"></div>
+            <div class="cursor-glow" id="cursor-glow"></div>
+            <div class="container">
+                <p class="hero-eyebrow monospace">> ABOUT_AISHELF // OUR STORY <span class="blinking-cursor"></span></p>
+                <h1>We built the shelf we<br>wished existed.</h1>
+            </div>
+        </section>
+
+        <section class="story-section">
+            <div class="container">
+                <div class="section-heading">
+                    <h2>Why AIShelf exists</h2>
+                </div>
+                <div class="story-content">
+                    <p>The AI tools space is exploding. New tools launch every single day — each claiming to be the best, fastest, and smartest.</p>
+                    <p>The problem? Most aren't worth your time or money. Figuring out which ones are takes hours of research, trial and error, and wasted subscriptions.</p>
+                    <p>We built AIShelf to fix that.</p>
+                    <p>Every tool on this site has been researched and reviewed. We look at pricing, features, real use cases, and value for money — then tell you straight: worth it or skip it.</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="trust-section">
+            <div class="container">
+                <div class="trust-grid">
+                    <div class="trust-item">
+                        <span class="trust-icon">🔬</span>
+                        <h3>We test everything</h3>
+                        <p>No tool gets recommended without going through our review process first.</p>
+                    </div>
+                    <div class="trust-item">
+                        <span class="trust-icon">💬</span>
+                        <h3>We write honestly</h3>
+                        <p>If a tool is overpriced or overhyped we say so. Our readers trust us because we don't sugarcoat.</p>
+                    </div>
+                    <div class="trust-item">
+                        <span class="trust-icon">🔄</span>
+                        <h3>We stay current</h3>
+                        <p>AI moves fast. We update our reviews every quarter so you never rely on outdated information.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="coverage-section">
+            <div class="container">
+                <div class="section-heading">
+                    <h2>What we cover</h2>
+                </div>
+                <div class="pills-grid">
+                    <div class="pill-item">Writing AI</div>
+                    <div class="pill-item">SEO AI</div>
+                    <div class="pill-item">Image & Video</div>
+                    <div class="pill-item">Productivity</div>
+                    <div class="pill-item">Business</div>
+                    <div class="pill-item">Chatbots</div>
+                    <div class="pill-item">Code</div>
+                    <div class="pill-item">Research</div>
+                </div>
+            </div>
+        </section>
+
+        <section class="closing-cta">
+            <div class="hero-background"></div>
+            <div class="container">
+                <h2>Ready to find your next AI tool?</h2>
+                <p>Browse 80+ reviewed tools across 8 categories — all free, all honest.</p>
+                <a href="index.html#tool-directory" class="btn btn-primary">Browse All Tools →</a>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-col">
+                    <a href="index.html" class="footer-logo"><img src="logo.png" alt="AIShelf Logo"></a>
+                    <p class="footer-tagline">Your curated shelf of the best AI tools.</p>
+                    <div class="social-icons">
+                        <a href="#" class="social-icon" aria-label="Twitter/X"><span class="icon">X</span></a>
+                        <a href="#" class="social-icon" aria-label="Pinterest"><span class="icon">P</span></a>
+                        <a href="#" class="social-icon" aria-label="Instagram"><span class="icon">IG</span></a>
+                        <a href="#" class="social-icon" aria-label="YouTube"><span class="icon">YT</span></a>
+                    </div>
+                </div>
+                <div class="footer-col">
+                    <h4>CATEGORIES</h4>
+                    <ul class="footer-links">
+                        <li><a href="index.html#tool-directory">Writing</a></li>
+                        <li><a href="index.html#tool-directory">SEO</a></li>
+                        <li><a href="index.html#tool-directory">Image & Video</a></li>
+                        <li><a href="index.html#tool-directory">Productivity</a></li>
+                        <li><a href="index.html#tool-directory">Business</a></li>
+                        <li><a href="index.html#tool-directory">Chatbots</a></li>
+                        <li><a href="index.html#tool-directory">Code</a></li>
+                        <li><a href="index.html#tool-directory">Research</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>COMPANY</h4>
+                    <ul class="footer-links">
+                        <li><a href="about.html">About</a></li>
+                        <li><a href="contact.html">Contact</a></li>
+                        <li><a href="contact.html?type=advertise">Advertise</a></li>
+                        <li><a href="contact.html?type=submit">Submit a Tool</a></li>
+                    </ul>
+                    <h4 class="monospace" style="margin-top: 2rem;">LATEST DEALS</h4>
+                    <ul class="footer-deals">
+                        <li>Jasper: 30% Off First 3 Months</li>
+                        <li>Surfer SEO: 25% Off Annual Plans</li>
+                        <li>Copy.ai: Get 45% Off First Month</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 AIShelf. All rights reserved.</p>
+                <div class="footer-bottom-links">
+                    <a href="#">Privacy Policy</a>
+                    <a href="#">Terms</a>
+                    <a href="#">Disclosure</a>
+                </div>
+            </div>
+        </div>
+        <div class="disclosure">
+            <div class="container">
+                AIShelf participates in affiliate programs and may earn a small commission on purchases made through links on this site, at no extra cost to you. We only recommend tools we have independently reviewed.
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Navbar sticky and blur on scroll
+        const navbar = document.getElementById('navbar');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 50) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+        });
+
+        // Mobile menu toggle
+        const hamburger = document.querySelector('.hamburger');
+        const mobileMenu = document.querySelector('.mobile-menu');
+        const mobileMenuLinks = document.querySelectorAll('.mobile-menu a');
+
+        hamburger.addEventListener('click', () => {
+            hamburger.classList.toggle('open');
+            mobileMenu.classList.toggle('open');
+            document.body.style.overflow = mobileMenu.classList.contains('open') ? 'hidden' : '';
+        });
+
+        mobileMenuLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                hamburger.classList.remove('open');
+                mobileMenu.classList.remove('open');
+                document.body.style.overflow = '';
+            });
+        });
+
+        // Scroll reveal for sections
+        const sections = document.querySelectorAll('section');
+
+        const sectionObserverOptions = {
+            root: null,
+            rootMargin: '0px',
+            threshold: 0.1
+        };
+
+        const sectionObserver = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('is-visible');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, sectionObserverOptions);
+
+        sections.forEach(section => {
+            if (!section.classList.contains('is-visible')) {
+                sectionObserver.observe(section);
+            }
+        });
+
+        // Hero section cursor glow effect
+        const heroSection = document.getElementById('hero-section');
+        const cursorGlow = document.getElementById('cursor-glow');
+
+        if (heroSection && cursorGlow && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+            heroSection.addEventListener('mousemove', (e) => {
+                const rect = heroSection.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                cursorGlow.style.transform = `translate(${x}px, ${y}px) translate(-50%, -50%)`;
+            });
+        }
+    </script>
+</body>
+</html>

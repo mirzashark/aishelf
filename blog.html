@@ -1,0 +1,1160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blog - AIShelf</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    <style>
+        /* Variables */
+        :root {
+            --blue-primary: #2D6BE4;
+            --blue-dark: #1A47A0;
+            --blue-light: #EEF3FD;
+            --blue-glow: rgba(45, 107, 228, 0.15);
+            --dark-bg: #0D1B3E;
+            --darker-bg: #020813;
+            --text-primary: #111827;
+            --text-muted: #6b7280;
+            --text-light: #E2E8F0;
+            --border: #e5e7eb;
+            --card-bg: #ffffff;
+            --page-bg: #f8faff;
+            --max-width: 1200px;
+        }
+
+        /* Base styles */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            color: var(--text-primary);
+            background-color: var(--page-bg);
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+            scroll-behavior: smooth;
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Playfair Display', serif;
+            color: var(--text-primary);
+            line-height: 1.2;
+            margin-bottom: 0.5em;
+        }
+        
+        .monospace {
+            font-family: 'Courier New', monospace;
+        }
+
+        a {
+            color: var(--blue-primary);
+            text-decoration: none;
+            transition: color 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        a:hover {
+            color: var(--blue-dark);
+        }
+
+        p {
+            margin-bottom: 1em;
+        }
+
+        .container {
+            max-width: var(--max-width);
+            margin: 0 auto;
+            padding: 0 1rem;
+        }
+
+        section {
+            padding: 5rem 0;
+            opacity: 0; /* For scroll reveal */
+            transform: translateY(30px); /* For scroll reveal */
+            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+        }
+
+        section.is-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        /* Staggered children for scroll reveal */
+        section.is-visible > .container > *:nth-child(1) { transition-delay: 0s; }
+        section.is-visible > .container > *:nth-child(2) { transition-delay: 0.1s; }
+        section.is-visible > .container > *:nth-child(3) { transition-delay: 0.2s; }
+        section.is-visible > .container > *:nth-child(4) { transition-delay: 0.3s; }
+        section.is-visible > .container > *:nth-child(5) { transition-delay: 0.4s; }
+        section.is-visible > .container > *:nth-child(6) { transition-delay: 0.5s; }
+
+        /* Buttons */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0.9rem 1.8rem;
+            border-radius: 8px;
+            font-weight: 500;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-align: center;
+            white-space: nowrap;
+        }
+
+        .btn-primary {
+            background-color: var(--blue-primary);
+            color: var(--card-bg);
+            border: 1px solid var(--blue-primary);
+        }
+
+        .btn-primary:hover {
+            background-color: var(--blue-dark);
+            border-color: var(--blue-dark);
+            box-shadow: 0 0 20px var(--blue-glow);
+        }
+
+        /* Navbar */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background-color: #020813;
+            backdrop-filter: blur(5px);
+            padding: 0.5rem 0;
+            z-index: 1000;
+            border-bottom: 1px solid rgba(45, 107, 228, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .navbar.scrolled {
+            backdrop-filter: blur(10px);
+            padding: 0.3rem 0;
+            background-color: rgba(2, 8, 19, 0.95);
+        }
+
+        .navbar .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-family: 'DM Sans', sans-serif;
+            font-size: 1.8rem;
+            font-weight: 700;
+            letter-spacing: 0.05em;
+            color: var(--text-light);
+        }
+
+        .logo span {
+            color: var(--blue-primary);
+        }
+
+        .logo img, .footer-logo img {
+            height: 70px;
+            display: block;
+            width: auto;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2.5rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: var(--text-light);
+            font-weight: 500;
+            padding: 0.5rem 0;
+            position: relative;
+        }
+
+        .nav-links a:hover, .nav-links a.active {
+            color: var(--blue-primary);
+            text-shadow: 0 0 8px var(--blue-glow);
+        }
+
+        .nav-links a.active::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background-color: var(--blue-primary);
+            box-shadow: 0 0 8px var(--blue-glow);
+        }
+
+        .nav-cta {
+            margin-left: 2rem;
+            border: 1px solid var(--blue-primary);
+            color: var(--blue-primary);
+            background: transparent;
+            padding: 0.7rem 1.4rem;
+        }
+        .nav-cta:hover {
+            background-color: var(--blue-primary);
+            color: var(--card-bg);
+            box-shadow: 0 0 15px var(--blue-glow);
+        }
+
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            justify-content: space-between;
+            width: 28px;
+            height: 22px;
+            cursor: pointer;
+            z-index: 1001;
+            padding: 0;
+            background: none;
+            border: none;
+        }
+
+        .hamburger span {
+            display: block;
+            width: 100%;
+            height: 2px;
+            background-color: var(--text-light);
+            transition: all 0.3s ease;
+            border-radius: 1px;
+        }
+
+        .hamburger.open span:nth-child(1) {
+            transform: translateY(10px) rotate(45deg);
+        }
+
+        .hamburger.open span:nth-child(2) {
+            opacity: 0;
+        }
+
+        .hamburger.open span:nth-child(3) {
+            transform: translateY(-10px) rotate(-45deg);
+        }
+
+        .mobile-menu {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            background-color: var(--darker-bg);
+            padding-top: 6rem;
+            flex-direction: column;
+            align-items: center;
+            gap: 1.8rem;
+            transition: transform 0.3s ease-out;
+            transform: translateY(-100%);
+            z-index: 999;
+            list-style: none;
+        }
+
+        .mobile-menu.open {
+            transform: translateY(0);
+            display: flex;
+        }
+
+        .mobile-menu a {
+            font-size: 1.6rem;
+            color: var(--text-light);
+            font-weight: 500;
+        }
+        .mobile-menu a:hover, .mobile-menu a.active {
+            color: var(--blue-primary);
+        }
+
+        /* Hero Section */
+        .hero {
+            position: relative;
+            height: 60vh;
+            min-height: 450px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            background-color: var(--darker-bg);
+            overflow: hidden;
+            padding-top: 6rem;
+        }
+
+        /* CSS Grid Background */
+        .hero-background {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image:
+                linear-gradient(to right, rgba(45,107,228,0.05) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(45,107,228,0.05) 1px, transparent 1px);
+            background-size: 40px 40px;
+            animation: gridDrift 8s linear infinite;
+        }
+
+        @keyframes gridDrift {
+            0% { background-position: 0 0; }
+            100% { background-position: 40px 40px; }
+        }
+
+        /* Radial Glow Overlay */
+        .hero-background::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at center, rgba(45,107,228,0.1) 0%, transparent 50%);
+            pointer-events: none;
+        }
+        
+        /* Scanline Overlay */
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: repeating-linear-gradient(
+                rgba(0,0,0,0.01), 
+                rgba(0,0,0,0.01) 1px, 
+                transparent 1px, 
+                transparent 2px
+            );
+            pointer-events: none;
+            z-index: 2;
+        }
+
+        .hero .container {
+            position: relative;
+            z-index: 10;
+        }
+
+        .hero-eyebrow {
+            font-size: 0.75rem;
+            font-weight: 500;
+            color: var(--blue-primary);
+            letter-spacing: 3px;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .blinking-cursor {
+            display: inline-block;
+            width: 2px;
+            height: 1em;
+            background-color: var(--blue-primary);
+            margin-left: 0.2em;
+            vertical-align: middle;
+            animation: blink 0.8s infinite;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+
+        .hero h1 {
+            font-size: clamp(2.4rem, 5vw, 3.5rem);
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(135deg, #ffffff 0%, var(--blue-primary) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* Cursor Glow */
+        .cursor-glow {
+            position: absolute;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(45,107,228,0.12) 0%, transparent 70%);
+            border-radius: 50%;
+            pointer-events: none;
+            transform: translate(-50%, -50%);
+            transition: opacity 0.3s ease-out;
+            opacity: 0;
+            z-index: 1;
+        }
+        .hero:hover .cursor-glow {
+            opacity: 1;
+        }
+
+        /* Search and Filters */
+        .search-bar {
+            margin-bottom: 2.5rem;
+            position: relative;
+        }
+
+        .search-bar input {
+            width: 100%;
+            padding: 0.9rem 1.2rem;
+            border-radius: 10px;
+            border: 1px solid var(--border);
+            font-size: 1rem;
+            color: var(--text-primary);
+            background-color: var(--card-bg);
+            transition: all 0.2s ease;
+        }
+
+        .search-bar input:focus {
+            outline: none;
+            border-color: var(--blue-primary);
+            box-shadow: 0 0 0 3px var(--blue-glow);
+        }
+
+        .filter-bar {
+            display: flex;
+            gap: 0.75rem;
+            margin-bottom: 3rem;
+            overflow-x: auto;
+            scrollbar-width: none;
+            padding-bottom: 0.5rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .filter-bar::-webkit-scrollbar {
+            display: none;
+        }
+
+        .filter-pill {
+            display: inline-flex;
+            padding: 0.6rem 1.2rem;
+            border-radius: 9999px;
+            border: 1px solid var(--border);
+            background-color: var(--card-bg);
+            color: var(--text-muted);
+            font-weight: 500;
+            font-size: 0.9rem;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all 0.2s ease;
+        }
+
+        .filter-pill:hover:not(.active) {
+            border-color: var(--blue-primary);
+            color: var(--blue-primary);
+        }
+
+        .filter-pill.active {
+            background-color: var(--blue-primary);
+            color: var(--card-bg);
+            border-color: var(--blue-primary);
+            box-shadow: 0 0 12px var(--blue-glow);
+        }
+
+        /* Blog Grid */
+        .blog-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.8rem;
+            min-height: 200px;
+        }
+
+        .blog-card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 22px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            transition: all 0.25s ease;
+            position: relative;
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .blog-card.hidden {
+            display: none;
+        }
+
+        .blog-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--blue-primary);
+            box-shadow: 0 8px 30px rgba(45,107,228,0.12);
+        }
+
+        .blog-card-header {
+            margin-bottom: 0.75rem;
+        }
+
+        .blog-category-tag {
+            font-size: 0.625rem;
+            font-weight: 700;
+            color: var(--blue-primary);
+            background-color: var(--blue-light);
+            padding: 3px 8px;
+            border-radius: 4px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            font-family: 'Courier New', monospace;
+        }
+
+        .blog-card-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1rem; /* 16px */
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 0.75rem;
+            line-height: 1.4;
+        }
+
+        .blog-card-excerpt {
+            font-size: 0.8125rem; /* 13px */
+            color: var(--text-muted);
+            margin-bottom: 1.5rem;
+            flex-grow: 1;
+            line-height: 1.6;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .blog-card-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: auto;
+            border-top: 1px solid rgba(0,0,0,0.05);
+            padding-top: 0.75rem;
+        }
+
+        .blog-read-time {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+
+        .read-more-link {
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: var(--blue-primary);
+            display: flex;
+            align-items: center;
+        }
+
+        .read-more-link::after {
+            content: '→';
+            margin-left: 0.4em;
+            transition: margin-left 0.2s ease;
+        }
+
+        .blog-card:hover .read-more-link::after {
+            margin-left: 0.6em;
+        }
+
+        .no-results {
+            grid-column: 1 / -1;
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 1.125rem;
+            padding: 2rem;
+            display: none;
+        }
+
+        /* Newsletter Section */
+        .newsletter {
+            position: relative;
+            background-color: var(--darker-bg);
+            color: var(--text-light);
+            text-align: center;
+            overflow: hidden;
+        }
+
+        .newsletter-eyebrow {
+            font-size: 0.75rem;
+            font-weight: 500;
+            color: var(--blue-primary);
+            letter-spacing: 3px;
+            margin-bottom: 1.5rem;
+            display: block;
+        }
+
+        .newsletter h2 {
+            font-size: clamp(2rem, 4vw, 2.5rem);
+            color: var(--text-light);
+            margin-bottom: 1rem;
+        }
+
+        .newsletter p {
+            font-size: 1.0625rem;
+            color: #94A3B8;
+            margin-bottom: 2rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            line-height: 1.8;
+        }
+
+        .newsletter-form {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+            position: relative;
+            z-index: 10;
+        }
+
+        .newsletter-form input[type="email"] {
+            padding: 0.9rem 1.2rem;
+            border-radius: 8px;
+            border: 1px solid rgba(45,107,228,0.3);
+            font-size: 1rem;
+            width: 100%;
+            max-width: 320px;
+            background-color: rgba(255, 255, 255, 0.05);
+            color: var(--text-light);
+            outline: none;
+            transition: all 0.2s ease;
+        }
+
+        .newsletter-form input[type="email"]::placeholder {
+            color: #94A3B8;
+        }
+
+        .newsletter-form input[type="email"]:focus {
+            border-color: var(--blue-primary);
+            box-shadow: 0 0 0 3px var(--blue-glow);
+        }
+
+        .newsletter-form .btn {
+            padding-left: 2rem;
+            padding-right: 2rem;
+        }
+
+        .newsletter-fineprint {
+            font-size: 0.75rem;
+            color: #94A3B8;
+        }
+
+        /* Footer */
+        .footer {
+            background-color: var(--darker-bg);
+            color: #94A3B8;
+            padding-top: 4rem;
+            border-top: 1px solid rgba(45, 107, 228, 0.15);
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2.5rem;
+            margin-bottom: 3.5rem;
+        }
+
+        .footer-col h4 {
+            font-family: 'Courier New', monospace;
+            font-size: 0.8125rem;
+            font-weight: 500;
+            color: var(--blue-primary);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 1.5rem;
+        }
+
+        .footer-logo {
+            display: block;
+            margin-bottom: 0.75rem;
+        }
+
+        .footer-tagline {
+            font-size: 0.9375rem;
+            color: #94A3B8;
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+        }
+
+        .social-icons {
+            display: flex;
+            gap: 0.8rem;
+        }
+
+        .social-icon {
+            width: 36px;
+            height: 36px;
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: var(--text-light);
+            font-size: 1rem;
+            transition: all 0.2s ease;
+        }
+
+        .social-icon:hover {
+            border-color: var(--blue-primary);
+            color: var(--blue-primary);
+            box-shadow: 0 0 10px rgba(45,107,228,0.3);
+        }
+
+        .footer-links {
+            list-style: none;
+        }
+
+        .footer-links li {
+            margin-bottom: 0.8rem;
+        }
+
+        .footer-links a {
+            color: #94A3B8;
+            font-size: 0.9375rem;
+            transition: color 0.2s ease;
+        }
+
+        .footer-links a:hover {
+            color: var(--blue-primary);
+        }
+
+        .footer-deals ul {
+            list-style: none;
+        }
+        .footer-deals li {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 0.75rem;
+            font-size: 0.9375rem;
+            color: #94A3B8;
+        }
+        .footer-deals li::before {
+            content: '→';
+            color: var(--blue-primary);
+            font-weight: bold;
+        }
+
+        .footer-bottom {
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 1.5rem 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+            font-size: 0.875rem;
+            color: #94A3B8;
+        }
+
+        .footer-bottom-links a {
+            color: #94A3B8;
+            margin-left: 1rem;
+            transition: color 0.2s ease;
+        }
+        .footer-bottom-links a:hover {
+            color: var(--blue-primary);
+        }
+
+        .disclosure {
+            background-color: var(--darker-bg);
+            color: var(--text-muted);
+            font-size: 0.6875rem;
+            padding: 1.5rem 0;
+            text-align: center;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        /* Media Queries */
+        @media (max-width: 1024px) {
+            .nav-links, .nav-cta {
+                display: none;
+            }
+            .hamburger {
+                display: flex;
+            }
+            .blog-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            section {
+                padding: 4rem 0;
+            }
+            .hero {
+                height: 50vh;
+                min-height: 380px;
+                padding-top: 5rem;
+            }
+            .hero h1 {
+                font-size: clamp(2rem, 7vw, 2.5rem);
+            }
+            .blog-grid {
+                grid-template-columns: 1fr;
+            }
+            .footer-content {
+                grid-template-columns: 1fr;
+            }
+            .footer-bottom {
+                flex-direction: column;
+                text-align: center;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .hero-background, .hero-background::after, .blinking-cursor,
+            .cursor-glow, section, .blog-card, .btn-primary:hover, .nav-cta:hover {
+                animation: none !important;
+                transition: none !important;
+                transform: none !important;
+                opacity: 1 !important;
+                backdrop-filter: none !important;
+                box-shadow: none !important;
+            }
+        }
+
+    </style>
+</head>
+<body>
+    <nav class="navbar" id="navbar">
+        <div class="container">
+            <a href="index.html" class="logo"><img src="logo.png" alt="AIShelf Logo"></a>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="about.html">About</a></li>
+                <li><a href="blog.html" class="active">Blog</a></li>
+                <li><a href="contact.html">Contact</a></li>
+            </ul>
+            <a href="index.html#tool-directory" class="btn nav-cta">Explore Tools</a>
+            <button class="hamburger" aria-label="Toggle navigation menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </div>
+        <ul class="mobile-menu">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="about.html">About</a></li>
+            <li><a href="blog.html" class="active">Blog</a></li>
+            <li><a href="contact.html">Contact</a></li>
+            <li><a href="index.html#tool-directory" class="btn btn-primary">Explore Tools</a></li>
+        </ul>
+    </nav>
+
+    <main>
+        <section class="hero is-visible" id="hero-section">
+            <div class="hero-background"></div>
+            <div class="cursor-glow" id="cursor-glow"></div>
+            <div class="container">
+                <p class="hero-eyebrow monospace">> AISHELF_BLOG // LATEST POSTS <span class="blinking-cursor"></span></p>
+                <h1>Honest takes on AI tools.</h1>
+            </div>
+        </section>
+
+        <section class="blog-section">
+            <div class="container">
+                <div class="search-bar">
+                    <input type="text" id="blogSearchInput" placeholder="Search articles...">
+                </div>
+
+                <div class="filter-bar">
+                    <button class="filter-pill active" data-filter="all">All</button>
+                    <button class="filter-pill" data-filter="reviews">Reviews</button>
+                    <button class="filter-pill" data-filter="roundups">Roundups</button>
+                    <button class="filter-pill" data-filter="tutorials">Tutorials</button>
+                    <button class="filter-pill" data-filter="deals">Deals</button>
+                    <button class="filter-pill" data-filter="news">News</button>
+                </div>
+
+                <div class="blog-grid" id="blogGrid">
+                    <!-- Cards will be populated by JS -->
+                </div>
+                <div class="no-results" id="noResultsMessage">
+                    No articles found matching your criteria.
+                </div>
+            </div>
+        </section>
+
+        <section id="newsletter" class="newsletter">
+            <div class="hero-background"></div>
+            <div class="container">
+                <span class="newsletter-eyebrow monospace">> WEEKLY_DISPATCH // FREE</span>
+                <h2>One email. The best AI picks.</h2>
+                <p>Every Tuesday — top tools, exclusive deals, and honest takes. No noise.</p>
+                <form class="newsletter-form">
+                    <input type="email" placeholder="Enter your email address" required aria-label="Email address for newsletter">
+                    <button type="submit" class="btn btn-primary">Get Free Picks →</button>
+                </form>
+                <p class="newsletter-fineprint">No spam. Unsubscribe anytime.</p>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-col">
+                    <a href="index.html" class="footer-logo"><img src="logo.png" alt="AIShelf Logo"></a>
+                    <p class="footer-tagline">Your curated shelf of the best AI tools.</p>
+                    <div class="social-icons">
+                        <a href="#" class="social-icon" aria-label="Twitter/X"><span class="icon">X</span></a>
+                        <a href="#" class="social-icon" aria-label="Pinterest"><span class="icon">P</span></a>
+                        <a href="#" class="social-icon" aria-label="Instagram"><span class="icon">IG</span></a>
+                        <a href="#" class="social-icon" aria-label="YouTube"><span class="icon">YT</span></a>
+                    </div>
+                </div>
+                <div class="footer-col">
+                    <h4>CATEGORIES</h4>
+                    <ul class="footer-links">
+                        <li><a href="index.html#tool-directory">Writing</a></li>
+                        <li><a href="index.html#tool-directory">SEO</a></li>
+                        <li><a href="index.html#tool-directory">Image & Video</a></li>
+                        <li><a href="index.html#tool-directory">Productivity</a></li>
+                        <li><a href="index.html#tool-directory">Business</a></li>
+                        <li><a href="index.html#tool-directory">Chatbots</a></li>
+                        <li><a href="index.html#tool-directory">Code</a></li>
+                        <li><a href="index.html#tool-directory">Research</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>COMPANY</h4>
+                    <ul class="footer-links">
+                        <li><a href="about.html">About</a></li>
+                        <li><a href="contact.html">Contact</a></li>
+                        <li><a href="contact.html?type=advertise">Advertise</a></li>
+                        <li><a href="contact.html?type=submit">Submit a Tool</a></li>
+                    </ul>
+                    <h4 class="monospace" style="margin-top: 2rem;">LATEST DEALS</h4>
+                    <ul class="footer-deals">
+                        <li>Jasper: 30% Off First 3 Months</li>
+                        <li>Surfer SEO: 25% Off Annual Plans</li>
+                        <li>Copy.ai: Get 45% Off First Month</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 AIShelf. All rights reserved.</p>
+                <div class="footer-bottom-links">
+                    <a href="#">Privacy Policy</a>
+                    <a href="#">Terms</a>
+                    <a href="#">Disclosure</a>
+                </div>
+            </div>
+        </div>
+        <div class="disclosure">
+            <div class="container">
+                AIShelf participates in affiliate programs and may earn a small commission on purchases made through links on this site, at no extra cost to you. We only recommend tools we have independently reviewed.
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Article Data
+        const blogData = [
+            {
+                id: 1,
+                category: "reviews",
+                categoryTag: "REVIEW",
+                title: "Jasper vs. Copy.ai in 2025 — Which Is Actually Worth It?",
+                excerpt: "We tested both tools for 30 days across real client projects. Here's the honest verdict.",
+                readTime: "5 min read"
+            },
+            {
+                id: 2,
+                category: "roundups",
+                categoryTag: "ROUNDUP",
+                title: "7 AI Writing Tools That Actually Save You Time",
+                excerpt: "Not all AI writers are equal. These 7 stood out in our testing for speed, quality, and value.",
+                readTime: "8 min read"
+            },
+            {
+                id: 3,
+                category: "tutorials",
+                categoryTag: "TUTORIAL",
+                title: "How to Use Surfer SEO + ChatGPT to Rank in 30 Days",
+                excerpt: "A step-by-step workflow combining two powerful tools to create content that ranks fast.",
+                readTime: "6 min read"
+            },
+            {
+                id: 4,
+                category: "deals",
+                categoryTag: "DEALS",
+                title: "Best AI Tool Deals This Week — Save Up to 40%",
+                excerpt: "We track discounts across all major AI tools so you never miss a deal.",
+                readTime: "3 min read"
+            },
+            {
+                id: 5,
+                category: "roundups",
+                categoryTag: "ROUNDUP",
+                title: "Best Free AI Tools in 2025 That Are Actually Good",
+                excerpt: "Free doesn't have to mean inferior. These tools prove it.",
+                readTime: "7 min read"
+            },
+            {
+                id: 6,
+                category: "reviews",
+                categoryTag: "REVIEW",
+                title: "Synthesia Review: Is AI Video Worth It in 2025?",
+                excerpt: "AI avatar videos sound amazing in theory. We tested Synthesia to see if it delivers in practice.",
+                readTime: "5 min read"
+            },
+            {
+                id: 7,
+                category: "tutorials",
+                categoryTag: "TUTORIAL",
+                title: "How to Build an AI Content Workflow From Scratch",
+                excerpt: "The exact tool stack and process we use to produce content 10x faster than traditional methods.",
+                readTime: "9 min read"
+            },
+            {
+                id: 8,
+                category: "news",
+                categoryTag: "NEWS",
+                title: "The Biggest AI Tool Launches This Month",
+                excerpt: "A roundup of every major AI tool launch, update, and announcement worth knowing about.",
+                readTime: "4 min read"
+            },
+            {
+                id: 9,
+                category: "reviews",
+                categoryTag: "REVIEW",
+                title: "Surfer SEO Review 2025: Still Worth $89 Per Month?",
+                excerpt: "Surfer SEO is one of the most recommended SEO tools out there. But is the price justified?",
+                readTime: "6 min read"
+            }
+        ];
+
+        const blogGrid = document.getElementById('blogGrid');
+        const filterPills = document.querySelectorAll('.filter-pill');
+        const noResultsMessage = document.getElementById('noResultsMessage');
+        const blogSearchInput = document.getElementById('blogSearchInput');
+        let currentFilter = 'all';
+
+        function renderArticles(filteredArticles) {
+            blogGrid.innerHTML = '';
+            
+            if (filteredArticles.length === 0) {
+                noResultsMessage.style.display = 'block';
+                return;
+            }
+            noResultsMessage.style.display = 'none';
+
+            filteredArticles.forEach((article, index) => {
+                const articleCard = document.createElement('article');
+                articleCard.classList.add('blog-card');
+                articleCard.setAttribute('data-category', article.category);
+                
+                articleCard.innerHTML = `
+                    <div class="blog-card-header">
+                        <span class="blog-category-tag monospace">${article.categoryTag}</span>
+                    </div>
+                    <h3 class="blog-card-title">${article.title}</h3>
+                    <p class="blog-card-excerpt">${article.excerpt}</p>
+                    <div class="blog-card-footer">
+                        <span class="blog-read-time">${article.readTime}</span>
+                        <a href="#" class="read-more-link">Read More</a>
+                    </div>
+                `;
+                blogGrid.appendChild(articleCard);
+            });
+        }
+
+        function applyFiltersAndSearch() {
+            const searchTerm = blogSearchInput.value.toLowerCase().trim();
+            const filteredByCategory = currentFilter === 'all'
+                ? blogData
+                : blogData.filter(article => article.category === currentFilter);
+
+            const filteredBySearch = filteredByCategory.filter(article => 
+                article.title.toLowerCase().includes(searchTerm) ||
+                article.excerpt.toLowerCase().includes(searchTerm)
+            );
+            renderArticles(filteredBySearch);
+        }
+
+        filterPills.forEach(pill => {
+            pill.addEventListener('click', () => {
+                filterPills.forEach(p => p.classList.remove('active'));
+                pill.classList.add('active');
+                currentFilter = pill.dataset.filter;
+                applyFiltersAndSearch();
+            });
+        });
+
+        blogSearchInput.addEventListener('input', applyFiltersAndSearch);
+
+        // Initial render
+        renderArticles(blogData);
+
+        // Navbar sticky and blur on scroll
+        const navbar = document.getElementById('navbar');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 50) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+        });
+
+        // Mobile menu toggle
+        const hamburger = document.querySelector('.hamburger');
+        const mobileMenu = document.querySelector('.mobile-menu');
+        const mobileMenuLinks = document.querySelectorAll('.mobile-menu a');
+
+        hamburger.addEventListener('click', () => {
+            hamburger.classList.toggle('open');
+            mobileMenu.classList.toggle('open');
+            document.body.style.overflow = mobileMenu.classList.contains('open') ? 'hidden' : '';
+        });
+
+        mobileMenuLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                hamburger.classList.remove('open');
+                mobileMenu.classList.remove('open');
+                document.body.style.overflow = '';
+            });
+        });
+
+        // Scroll reveal for sections
+        const sections = document.querySelectorAll('section');
+
+        const sectionObserverOptions = {
+            root: null,
+            rootMargin: '0px',
+            threshold: 0.1
+        };
+
+        const sectionObserver = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('is-visible');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, sectionObserverOptions);
+
+        sections.forEach(section => {
+            if (!section.classList.contains('is-visible')) {
+                sectionObserver.observe(section);
+            }
+        });
+
+        // Hero section cursor glow effect
+        const heroSection = document.getElementById('hero-section');
+        const cursorGlow = document.getElementById('cursor-glow');
+
+        if (heroSection && cursorGlow && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+            heroSection.addEventListener('mousemove', (e) => {
+                const rect = heroSection.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                cursorGlow.style.transform = `translate(${x}px, ${y}px) translate(-50%, -50%)`;
+            });
+        }
+    </script>
+</body>
+</html>
